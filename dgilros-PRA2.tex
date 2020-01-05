@@ -1,0 +1,984 @@
+\documentclass[12,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Tipologia i Cicle de Vida de les Dades: PRA2},
+            pdfauthor={Estudiant: David Gil del Rosal},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Tipologia i Cicle de Vida de les Dades: PRA2}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Estudiant: David Gil del Rosal}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\hypertarget{descripcio-del-dataset}{%
+\section{Descripció del dataset}\label{descripcio-del-dataset}}
+
+L'objectiu d'aquesta pràctica és el preprocessament i anàlsi preliminar
+del joc de dades ``Heart Disease Dataset'' de l'\emph{UCI Machine
+Learning Repository} {[}1{]}. Aquest dataset recopila analítiques sobre
+pacients tractats a diversos centres mèdics amb l'objectiu de predir si
+han sigut diagnosticats amb una malaltia cardiovascular.
+
+L'interès d'aquest joc de dades és que el seu anàlisi ajuda a conèixer
+quins factors alerten sobre la presència d'una malaltia coronària i aixó
+pot contribuïr al seu diagnòstic i prevenció. Aquests objectius són
+importants: segons l'Organització Mundial de la Salut les malalties
+cardiovasculars són la primera causa global de mortalitat {[}2{]}.
+
+Des del punt de vista del seu preprocessament aquest joc de dades és
+interessant perque presenta atributs quantitatius i qualitatius, axí com
+valors perduts i extrems.
+
+\hypertarget{integracio-i-seleccio-de-les-dades-a-analitzar}{%
+\section{Integració i selecció de les dades a
+analitzar}\label{integracio-i-seleccio-de-les-dades-a-analitzar}}
+
+El joc de dades complet consta de 4 fitxers corresponents a diversos
+hospitals i centres mèdics. Segons {[}1{]} les úniques dades usades a
+les recerques prèvies publicades han sigut les de la \emph{Cleveland
+Clinic Foundation}, per la qual cosa són les que usarem a aquest
+treball.
+
+El joc de dades original consta de 76 variables, però tots els estudis
+publicats han analitzat els 14 atributs més importants que es presenten
+a continuació. S'indica si són quantitatius (numèrics) o qualitatis
+(categòrics). Tots els atributs categòrics estàn codificats mitjançant
+números per als quals s'assenyala els nivells i el valor de referència
+que és el que presenta menys risc de malaltia cardiovascular i que,
+excepte se s'indica el contrari, ès el primer nivell.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Atribut & Descripció & Tipus\tabularnewline
+\midrule
+\endhead
+age & Edat en anys & Num.\tabularnewline
+sex & Sexe & Cat.: 0=dona, 1=home\tabularnewline
+cp & Tipus de dolor en el pit & Cat.: 1,2,3,4;
+4=asimptomàtic\tabularnewline
+trestbps & Pressió de la sang en repòs en mm/Hg & Num.\tabularnewline
+chol & Sèrum de colesterol en mg/dl & Num.\tabularnewline
+fbs & Nivell de sucre en sang en dejuni \textgreater{} 120 mg/dl & Cat.:
+0=no, 1=sí\tabularnewline
+restecg & Resultats de l'electrocardiograma en repòs & Cat.: 0,1,2;
+0=normal\tabularnewline
+thalach & Velocitat màxima de pulsacions registrada & Cat.: 0,1,2,3;
+0=normal\tabularnewline
+exang & Angina de pit induïda per exercici & Cat.: 0=no,
+1=sí\tabularnewline
+oldpeak & Depressió en el segment ST de l'electrocardiograma &
+Num.\tabularnewline
+slope & Tipus de pendent del segment ST & Cat.: 1=avall, 2=pla,
+3=amunt\tabularnewline
+ca & Venes majors acolorides amb fluoroscopi & Cat.:
+0,1,2,3\tabularnewline
+thal & Defecte congènit de sang (talassèmia) & Cat.:
+3=no,6=inactiu,7=actiu\tabularnewline
+num & Diagnòstic (valor a predir) & Cat.: 0=sa,
+1-4=malalt\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{neteja-de-les-dades}{%
+\section{Neteja de les dades}\label{neteja-de-les-dades}}
+
+Les dades són en un fitxer CSV delimitat per comes al lloc web de
+l'\emph{UCI Machine Learning Repository} {[}1{]}. El següent codi R
+llegeix el fitxer i assigna el nóm dels atributs. Els valors buits estan
+codificats amb el caràcter ``?'' al fitxer:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{'processed.cleveland.data'}\NormalTok{, }\DataTypeTok{header=}\OtherTok{FALSE}\NormalTok{, }
+                 \DataTypeTok{sep=}\StringTok{","}\NormalTok{, }\DataTypeTok{na.strings=}\StringTok{"?"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(data) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'age'}\NormalTok{,}\StringTok{'sex'}\NormalTok{,}\StringTok{'cp'}\NormalTok{,}\StringTok{'trestbps'}\NormalTok{,}\StringTok{'chol'}\NormalTok{,}\StringTok{'fbs'}\NormalTok{,}
+                    \StringTok{'restecg'}\NormalTok{,}\StringTok{'thalach'}\NormalTok{,}\StringTok{'exang'}\NormalTok{,}\StringTok{'oldpeak'}\NormalTok{,}
+                    \StringTok{'slope'}\NormalTok{,}\StringTok{'ca'}\NormalTok{,}\StringTok{'thal'}\NormalTok{,}\StringTok{'num'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+El joc de dades conté 303 registres amb 14 variables. Totes s'han
+interpretat com numèriques ja que, com s'ha dit, les categòriques estan
+codificades mitjançant números:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{str}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    303 obs. of  14 variables:
+##  $ age     : num  63 67 67 37 41 56 62 57 63 53 ...
+##  $ sex     : num  1 1 1 1 0 1 0 0 1 1 ...
+##  $ cp      : num  1 4 4 3 2 2 4 4 4 4 ...
+##  $ trestbps: num  145 160 120 130 130 120 140 120 130 140 ...
+##  $ chol    : num  233 286 229 250 204 236 268 354 254 203 ...
+##  $ fbs     : num  1 0 0 0 0 0 0 0 0 1 ...
+##  $ restecg : num  2 2 2 0 2 0 2 0 2 2 ...
+##  $ thalach : num  150 108 129 187 172 178 160 163 147 155 ...
+##  $ exang   : num  0 1 1 0 0 0 0 1 0 1 ...
+##  $ oldpeak : num  2.3 1.5 2.6 3.5 1.4 0.8 3.6 0.6 1.4 3.1 ...
+##  $ slope   : num  3 2 2 3 1 1 3 1 2 3 ...
+##  $ ca      : num  0 3 2 0 0 0 2 0 1 0 ...
+##  $ thal    : num  6 3 7 3 3 3 3 3 7 7 ...
+##  $ num     : int  0 2 1 0 0 0 3 0 2 1 ...
+\end{verbatim}
+
+Abans de proseguir l'anàlisi, farem dues tasques de preprocessament. Com
+que l'anàlisis es centrarà en detectar la presència o absència de
+malaltia i no el seu tipus, substituïrem la variable \texttt{num}
+(factor amb nivells 0 a 4) pel factor binari \texttt{disease} i
+convertirem la resta de variables categòriques en factors:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data}\OperatorTok{$}\NormalTok{disease <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(data}\OperatorTok{$}\NormalTok{num }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\NormalTok{data}\OperatorTok{$}\NormalTok{num <-}\StringTok{ }\OtherTok{NULL}
+\NormalTok{cat_vars <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'sex'}\NormalTok{, }\StringTok{'cp'}\NormalTok{, }\StringTok{'fbs'}\NormalTok{, }\StringTok{'restecg'}\NormalTok{, }\StringTok{'exang'}\NormalTok{, }\StringTok{'slope'}\NormalTok{, }\StringTok{'ca'}\NormalTok{, }\StringTok{'thal'}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{(cat_var }\ControlFlowTok{in}\NormalTok{ cat_vars) \{}
+\NormalTok{  data[,cat_var] <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(data[,cat_var])}
+\NormalTok{\}}
+\KeywordTok{str}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    303 obs. of  14 variables:
+##  $ age     : num  63 67 67 37 41 56 62 57 63 53 ...
+##  $ sex     : Factor w/ 2 levels "0","1": 2 2 2 2 1 2 1 1 2 2 ...
+##  $ cp      : Factor w/ 4 levels "1","2","3","4": 1 4 4 3 2 2 4 4 4 4 ...
+##  $ trestbps: num  145 160 120 130 130 120 140 120 130 140 ...
+##  $ chol    : num  233 286 229 250 204 236 268 354 254 203 ...
+##  $ fbs     : Factor w/ 2 levels "0","1": 2 1 1 1 1 1 1 1 1 2 ...
+##  $ restecg : Factor w/ 3 levels "0","1","2": 3 3 3 1 3 1 3 1 3 3 ...
+##  $ thalach : num  150 108 129 187 172 178 160 163 147 155 ...
+##  $ exang   : Factor w/ 2 levels "0","1": 1 2 2 1 1 1 1 2 1 2 ...
+##  $ oldpeak : num  2.3 1.5 2.6 3.5 1.4 0.8 3.6 0.6 1.4 3.1 ...
+##  $ slope   : Factor w/ 3 levels "1","2","3": 3 2 2 3 1 1 3 1 2 3 ...
+##  $ ca      : Factor w/ 4 levels "0","1","2","3": 1 4 3 1 1 1 3 1 2 1 ...
+##  $ thal    : Factor w/ 3 levels "3","6","7": 2 1 3 1 1 1 1 1 3 3 ...
+##  $ disease : Factor w/ 2 levels "0","1": 1 2 2 1 1 1 2 1 2 2 ...
+\end{verbatim}
+
+\hypertarget{elements-buits}{%
+\subsection{Elements buits}\label{elements-buits}}
+
+El següent codi R usa la funció summary() per a mostrar els principals
+estadístics de les variables del joc de dades. També s'aprecia la
+presència de valors buits NA:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       age        sex     cp         trestbps          chol       fbs    
+##  Min.   :29.00   0: 97   1: 23   Min.   : 94.0   Min.   :126.0   0:258  
+##  1st Qu.:48.00   1:206   2: 50   1st Qu.:120.0   1st Qu.:211.0   1: 45  
+##  Median :56.00           3: 86   Median :130.0   Median :241.0          
+##  Mean   :54.44           4:144   Mean   :131.7   Mean   :246.7          
+##  3rd Qu.:61.00                   3rd Qu.:140.0   3rd Qu.:275.0          
+##  Max.   :77.00                   Max.   :200.0   Max.   :564.0          
+##  restecg    thalach      exang      oldpeak     slope      ca     
+##  0:151   Min.   : 71.0   0:204   Min.   :0.00   1:142   0   :176  
+##  1:  4   1st Qu.:133.5   1: 99   1st Qu.:0.00   2:140   1   : 65  
+##  2:148   Median :153.0           Median :0.80   3: 21   2   : 38  
+##          Mean   :149.6           Mean   :1.04           3   : 20  
+##          3rd Qu.:166.0           3rd Qu.:1.60           NA's:  4  
+##          Max.   :202.0           Max.   :6.20                     
+##    thal     disease
+##  3   :166   0:164  
+##  6   : 18   1:139  
+##  7   :117          
+##  NA's:  2          
+##                    
+## 
+\end{verbatim}
+
+Hi ha 6 registres amb valors buits: 4 per a l'atribut \texttt{ca} i 2
+per a l'atribut \texttt{thal}. Per a imputar el seu valor podriem usar
+una mesura de tendència central (la moda atès que tots dos atributs són
+categòrics) o bé predir-lo emprant un algorisme de mineria de dades.
+Optarem per la darrera opció, imputant-los amb els 3 veïns més propers
+emprant la funció \texttt{kNN} de la llibreria \texttt{VIM}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(VIM)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{kNN}\NormalTok{(data, }\DataTypeTok{variable=}\KeywordTok{c}\NormalTok{(}\StringTok{"ca"}\NormalTok{,}\StringTok{"thal"}\NormalTok{), }\DataTypeTok{k=}\DecValTok{3}\NormalTok{, }\DataTypeTok{imp_var=}\OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{colSums}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(data))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      age      sex       cp trestbps     chol      fbs  restecg  thalach 
+##        0        0        0        0        0        0        0        0 
+##    exang  oldpeak    slope       ca     thal  disease 
+##        0        0        0        0        0        0
+\end{verbatim}
+
+S'observa que ja no hi ha registres amb valors buits.
+
+\hypertarget{valors-extrems}{%
+\subsection{Valors extrems}\label{valors-extrems}}
+
+Per a detectar els valors extrems (\emph{extreme scores}) de les
+variables numèriques, usarem el criteri convencional de considerar com
+outliers els valors inferiors a Q1-1.5IQR o superiors que Q3+1.5IQR on
+Q1, Q3 són el primer i el tercer quartil de la distribució de valors de
+la variable corresponent, i IQR és el rang interquartílic.
+
+El següent codi R implementa una funció que, donat el dataframe que
+conté el joc de dades i un vector amb el nóm de les variables a
+testejar, retorna un dataframe les files del qual corresponen a les
+variables amb outliers, indicant el número, percentatge de registres
+afectats i valors extrems.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{get.outliers <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, variables) \{}
+\NormalTok{  df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\StringTok{"Valors"}\NormalTok{, }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{)}
+  \KeywordTok{colnames}\NormalTok{(df) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, }\StringTok{"#Outliers"}\NormalTok{, }\StringTok{"%Outliers"}\NormalTok{, }
+                    \StringTok{"Q1-1.5IQR"}\NormalTok{, }\StringTok{"Q3+1.5IQR"}\NormalTok{, }\StringTok{"Valors outliers"}\NormalTok{)}
+\NormalTok{  row <-}\StringTok{ }\DecValTok{1}
+  \ControlFlowTok{for}\NormalTok{(variable }\ControlFlowTok{in}\NormalTok{ variables) \{}
+\NormalTok{    values <-}\StringTok{ }\NormalTok{data[,variable]}
+\NormalTok{    q <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(values)}
+\NormalTok{    iqr <-}\StringTok{ }\KeywordTok{IQR}\NormalTok{(values)}
+\NormalTok{    outliers <-}\StringTok{ }\KeywordTok{boxplot.stats}\NormalTok{(values)}\OperatorTok{$}\NormalTok{out}
+\NormalTok{    n_outliers <-}\StringTok{ }\KeywordTok{length}\NormalTok{(outliers)}
+\NormalTok{    pct_outliers <-}\StringTok{ }\NormalTok{n_outliers}\OperatorTok{*}\DecValTok{100}\OperatorTok{/}\KeywordTok{nrow}\NormalTok{(data)}
+    \ControlFlowTok{if}\NormalTok{(n_outliers }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
+\NormalTok{      df[row,] <-}\StringTok{ }\KeywordTok{list}\NormalTok{(variable, n_outliers, pct_outliers, }
+\NormalTok{                       q[}\DecValTok{2}\NormalTok{]}\OperatorTok{-}\FloatTok{1.5}\OperatorTok{*}\NormalTok{iqr, q[}\DecValTok{4}\NormalTok{]}\OperatorTok{+}\FloatTok{1.5}\OperatorTok{*}\NormalTok{iqr,}
+                       \KeywordTok{paste}\NormalTok{(outliers, }\DataTypeTok{sep=}\StringTok{''}\NormalTok{, }\DataTypeTok{collapse=}\StringTok{','}\NormalTok{))}
+\NormalTok{      row <-}\StringTok{ }\NormalTok{row }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  \KeywordTok{return}\NormalTok{(df)}
+\NormalTok{\}}
+
+\NormalTok{num_vars <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'age'}\NormalTok{, }\StringTok{'trestbps'}\NormalTok{, }\StringTok{'chol'}\NormalTok{, }\StringTok{'thalach'}\NormalTok{, }\StringTok{'oldpeak'}\NormalTok{)   }\CommentTok{# variables numèriques}
+\NormalTok{df_outliers <-}\StringTok{ }\KeywordTok{get.outliers}\NormalTok{(data, num_vars)}
+\NormalTok{df_outliers}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrl@{}}
+\toprule
+Variable & \#Outliers & \%Outliers & Q1-1.5IQR & Q3+1.5IQR & Valors
+outliers\tabularnewline
+\midrule
+\endhead
+trestbps & 9 & 2.970297 & 90.00 & 170.00 &
+172,180,200,174,178,192,180,178,180\tabularnewline
+chol & 5 & 1.650165 & 115.00 & 371.00 &
+417,407,564,394,409\tabularnewline
+thalach & 1 & 0.330033 & 84.75 & 214.75 & 71\tabularnewline
+oldpeak & 5 & 1.650165 & -2.40 & 4.00 &
+6.2,5.6,4.2,4.2,4.4\tabularnewline
+\bottomrule
+\end{longtable}
+
+S'observa que les següents variables presenten valors extrems:
+
+\begin{itemize}
+\tightlist
+\item
+  trestbps: pressió de la sang en repós
+\item
+  chol: nivell de colesterol
+\item
+  thalach: velocitat màxima de pulsacions
+\item
+  oldpeak: depressió en el segment ST de l'electrocardiograma
+\end{itemize}
+
+Els següents \emph{boxplots} mostren els outliers detectats:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{(variable }\ControlFlowTok{in}\NormalTok{ df_outliers}\OperatorTok{$}\NormalTok{Variable) \{}
+  \KeywordTok{boxplot}\NormalTok{(data[,variable], }\DataTypeTok{main=}\NormalTok{variable)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dgilros-PRA2_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Per a corregir-los podriem usar les mateixes tècniques que amb els
+valors perduts però com semblen valors legítims en el domini, optarem
+per no corregir-los deixant-los tal com són.
+
+\hypertarget{analisi-de-les-dades}{%
+\section{Anàlisi de les dades}\label{analisi-de-les-dades}}
+
+\hypertarget{seleccio}{%
+\subsection{Selecció}\label{seleccio}}
+
+L'objectiu dels anàlisis serà determinar quins factors influeixen en la
+presència de malalties cardiovasculars i tractar de predir-les. Segons
+{[}1{]} totes les recerques publicades s'han basat en aquest criteri.
+
+Ambdues classes estan prou equilibrades al joc de dades: hi ha 139
+pacients malalts i 164 sans.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(data}\OperatorTok{$}\NormalTok{disease)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##   0   1 
+## 164 139
+\end{verbatim}
+
+\hypertarget{normalitat-i-homocedasticitat}{%
+\subsection{Normalitat i
+homocedasticitat}\label{normalitat-i-homocedasticitat}}
+
+Per a comprovar la normalitat de les variables numèriques usarem el test
+de Shapiro-Wilk. És un contrast estadístic on la hipòtesi nul.la és que
+els valors provenen d'una distribució normal. El següent codi R aplica
+aquest test a les variables numèriques:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(variable }\ControlFlowTok{in}\NormalTok{ num_vars) \{}
+\NormalTok{  results <-}\StringTok{ }\KeywordTok{shapiro.test}\NormalTok{(data[,variable])}
+  \KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, variable, }\StringTok{"p-valor"}\NormalTok{, results}\OperatorTok{$}\NormalTok{p))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Variable age p-valor 0.00606864230991071"
+## [1] "Variable trestbps p-valor 1.80206438980931e-06"
+## [1] "Variable chol p-valor 5.9115205752249e-09"
+## [1] "Variable thalach p-valor 6.9964709790962e-05"
+## [1] "Variable oldpeak p-valor 8.18337828923442e-17"
+\end{verbatim}
+
+Per a totes les variables els p-valors són menors que 0.05 per la qual
+cosa, a un nivell de confiança del 95\%, rebutjem la hipòtesi nul.la de
+que els valors estan normalment distribuïts.
+
+Mostrarem els histogrames univariants de cada variable on s'aprecia que
+totes les variables presenten importants desviacions de la normalitat
+com biaixos esquerra-dreta o indicis de multimodalitat.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{(variable }\ControlFlowTok{in}\NormalTok{ num_vars) \{}
+  \KeywordTok{hist}\NormalTok{(data[,variable], }\DataTypeTok{main=}\NormalTok{variable, }\DataTypeTok{xlab=}\NormalTok{variable)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dgilros-PRA2_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+Respecte a l'homocedasticitat, o igualtat de les variàncies entre els
+diferents grups de dades a comparar, per a comprovar-la s'estudiarà com
+varien els valors de les variables numèriques en funció de la resposta
+\texttt{disease}. Aplicarem el test de Fligner-Killeen la hipòtesi
+nul.la del qual és que les variàncies dels grups són iguals:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fligner.test}\NormalTok{(age }\OperatorTok{~}\StringTok{ }\NormalTok{disease, }\DataTypeTok{data=}\NormalTok{data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fligner-Killeen test of homogeneity of variances
+## 
+## data:  age by disease
+## Fligner-Killeen:med chi-squared = 7.2746, df = 1, p-value =
+## 0.006994
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fligner.test}\NormalTok{(trestbps }\OperatorTok{~}\StringTok{ }\NormalTok{disease, }\DataTypeTok{data=}\NormalTok{data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fligner-Killeen test of homogeneity of variances
+## 
+## data:  trestbps by disease
+## Fligner-Killeen:med chi-squared = 1.5023, df = 1, p-value = 0.2203
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fligner.test}\NormalTok{(chol }\OperatorTok{~}\StringTok{ }\NormalTok{disease, }\DataTypeTok{data=}\NormalTok{data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fligner-Killeen test of homogeneity of variances
+## 
+## data:  chol by disease
+## Fligner-Killeen:med chi-squared = 0.76597, df = 1, p-value =
+## 0.3815
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fligner.test}\NormalTok{(thalach }\OperatorTok{~}\StringTok{ }\NormalTok{disease, }\DataTypeTok{data=}\NormalTok{data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fligner-Killeen test of homogeneity of variances
+## 
+## data:  thalach by disease
+## Fligner-Killeen:med chi-squared = 5.3987, df = 1, p-value =
+## 0.02015
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fligner.test}\NormalTok{(oldpeak }\OperatorTok{~}\StringTok{ }\NormalTok{disease, }\DataTypeTok{data=}\NormalTok{data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fligner-Killeen test of homogeneity of variances
+## 
+## data:  oldpeak by disease
+## Fligner-Killeen:med chi-squared = 31.621, df = 1, p-value =
+## 1.874e-08
+\end{verbatim}
+
+En el cas de \texttt{age}, \texttt{thalach} i \texttt{oldpeak} el
+p-valor menor que 0,05 indica que poden rebutjar la hipòtesi nul.la i
+concloure que les variàncies són diferents en els grups de pacients sans
+i malalts. En el cas de \texttt{trestbps} i \texttt{chol} no podem
+rebutjar la hipòtesi nul.la de que els grups són homocedàstics.
+
+\hypertarget{proves-estadistiques}{%
+\subsection{Proves estadístiques}\label{proves-estadistiques}}
+
+\hypertarget{contrast-dhipotesis}{%
+\subsubsection{Contrast d'hipòtesis}\label{contrast-dhipotesis}}
+
+A aquest apartat realitzarem un contrast d'hipòtesis per a determinar si
+el nivell de colesterol és similar en els pacients diagnosticats
+positiva i negativament o si hi ha diferències significatives entre
+ambdós tipus de pacients.
+
+Estratificarem per la variable \texttt{disease} per a crear dues
+submostres, segons diagnosi positiu i negatiu, que són les que
+contrastarem. Usarem el test de Welch (derivat del test T de Student)
+per a comparar les mitjanes d'ambdós poblacions. Si denotem per
+\(\mu_{1}\) la mitjana del nivell de colesterol de la població de
+pacients malalts i per \(\mu_{2}\) la de la resta, les hipòtesis del
+test seran:
+
+\begin{itemize}
+\tightlist
+\item
+  Hipòtesi nul.la. \(H_{0}: \mu_{1}-\mu_{2}=0\)
+\item
+  Hipòtesi alternativa. \(H_{a}: \mu_{1}-\mu_{2} \ne 0\)
+\end{itemize}
+
+Com que compararem mitjanes i el tamany de la mostra és 303 (major que
+el valor convencional de 30), pel Teorema del Límit Central podem
+assumir que la distribució de mitjanes és aproximadament normal, així
+que podem aplicar el test T amb garanties.
+
+El següent codi obté les submostres i aplica el test T:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data.disease <-}\StringTok{ }\NormalTok{data[data}\OperatorTok{$}\NormalTok{disease }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{,]}
+\NormalTok{data.non_disease <-}\StringTok{ }\NormalTok{data[data}\OperatorTok{$}\NormalTok{disease }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{,]}
+\KeywordTok{t.test}\NormalTok{(data.disease}\OperatorTok{$}\NormalTok{chol, data.non_disease}\OperatorTok{$}\NormalTok{chol)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Welch Two Sample t-test
+## 
+## data:  data.disease$chol and data.non_disease$chol
+## t = 1.4924, df = 298.64, p-value = 0.1366
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.815018 20.484170
+## sample estimates:
+## mean of x mean of y 
+##  251.4748  242.6402
+\end{verbatim}
+
+El p-valor major que 0,1 indica que, per a qualsevol nivell de confiança
+major que 90\%, no es pot rebutjar la hipòtesis nul.la d'igualtat de
+mitjanes. És a dir: les dades disponibles no recolcen que hi ha
+diferències estadísticament significatives entre el nivell de colesterol
+dels pacients malalts i els sans, i són un indici de aquesta variable no
+és molt rellevant per a predir la presència de malaltia cardiovascular.
+
+\hypertarget{independencia-entre-la-resposta-i-les-variables-qualitatives}{%
+\subsubsection{Independència entre la resposta i les variables
+qualitatives}\label{independencia-entre-la-resposta-i-les-variables-qualitatives}}
+
+Per a analitzar la correlació entre les variables qualitatives i la
+resposta podem usar el test Chi-quadrat. A aquest test la hipòtesi
+nul.la és que les variables són independents.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(variable }\ControlFlowTok{in}\NormalTok{ cat_vars) \{}
+\NormalTok{  tab <-}\StringTok{ }\KeywordTok{table}\NormalTok{(data}\OperatorTok{$}\NormalTok{disease, data[,variable])}
+\NormalTok{  results <-}\StringTok{ }\KeywordTok{chisq.test}\NormalTok{(tab)}
+  \KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, variable, }\StringTok{"p-valor"}\NormalTok{, results}\OperatorTok{$}\NormalTok{p.value))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Variable sex p-valor 2.66671234818094e-06"
+## [1] "Variable cp p-valor 1.25171060078375e-17"
+## [1] "Variable fbs p-valor 0.781273406706379"
+## [1] "Variable restecg p-valor 0.00656652381421735"
+## [1] "Variable exang p-valor 1.41378809671808e-13"
+## [1] "Variable slope p-valor 1.1428845467527e-10"
+## [1] "Variable ca p-valor 1.17425942803183e-15"
+## [1] "Variable thal p-valor 3.69952147693275e-19"
+\end{verbatim}
+
+Els p-valors menors que 0.05 indiquen que podem rebutjar la hipòtesi
+d'independència i assumir que hi ha relació entre les var1iables
+qualitatives i la resposta malaltia, excepte en el cas de \texttt{fbs}
+on l'alt p-valor indica que es pot acceptar que aquesta variable és
+independent del diagnòstic.
+
+\hypertarget{regressio}{%
+\subsubsection{Regressió}\label{regressio}}
+
+A aquest apartat generarem un model de regressió logística que permetrà
+predir la presència de malaltia coronària en funció de diverses
+variables explicatives quantitatives i qualitatives.
+
+La regressió logística està vinculada al concepte d'odds-ratio (OR) que
+mesura l'increment de probabilitat d'una resposta (en el nostre cas
+malaltia coronària) en funció d'un factor. Per a les variables binàries
+l'odd-ratio es pot calcular amb la taula de contingència. Per exemple,
+el següent codi calcula l'OR de malaltia coronària segons el sexe
+(recordem que la variable \texttt{sex} val 0 per a les dones i 1 per als
+homes).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{odds.ratio.binary <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, y) \{}
+\NormalTok{  tab <-}\StringTok{ }\KeywordTok{table}\NormalTok{(x,y)}
+  \KeywordTok{return}\NormalTok{(tab[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{tab[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{]}\OperatorTok{/}\NormalTok{(tab[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{]}\OperatorTok{*}\NormalTok{tab[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{]))}
+\NormalTok{\}}
+
+\KeywordTok{odds.ratio.binary}\NormalTok{(data}\OperatorTok{$}\NormalTok{disease, data}\OperatorTok{$}\NormalTok{sex)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.568696
+\end{verbatim}
+
+L'OR indica que és 3.57 vegades més probable patir una malaltia
+coronària si se és home.
+
+Per a construïr el model de regressió logística aplicarem una tècnica
+anomenada selecció de variables cap enrere (backward selection).
+Construïrem un model amb totes les variables independents i després
+eliminarem les estadísticament no significatives. Com és habitual a
+l'àmbit del \emph{machine learning}, particionarem les dades en un
+conjunt d'entrenament i test per a validar l'efectivitat del model
+construït.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{train.test.split <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, }\DataTypeTok{train_size=}\FloatTok{0.8}\NormalTok{) \{}
+\NormalTok{  smp_size <-}\StringTok{ }\KeywordTok{floor}\NormalTok{(train_size }\OperatorTok{*}\StringTok{ }\KeywordTok{nrow}\NormalTok{(data))}
+\NormalTok{  train_ind <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{seq_len}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(data)), }\DataTypeTok{size=}\NormalTok{smp_size, }\DataTypeTok{replace=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  train <-}\StringTok{ }\NormalTok{data[train_ind,]}
+\NormalTok{  test <-}\StringTok{ }\NormalTok{data[}\OperatorTok{-}\NormalTok{train_ind,]}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\StringTok{"train"}\NormalTok{=train, }\StringTok{"test"}\NormalTok{=test))}
+\NormalTok{\}}
+
+\NormalTok{test.model <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(model, test_df) \{}
+\NormalTok{  probs <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(model, test_df, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{)}
+\NormalTok{  preds <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(probs }\OperatorTok{<}\StringTok{ }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\NormalTok{  errors <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(test_df}\OperatorTok{$}\NormalTok{disease}\OperatorTok{==}\NormalTok{preds, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{  df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(test_df}\OperatorTok{$}\NormalTok{disease, preds, probs, errors)}
+  \KeywordTok{colnames}\NormalTok{(df) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Realitat"}\NormalTok{, }\StringTok{"Prediccio"}\NormalTok{, }\StringTok{"Probabilitat"}\NormalTok{,}\StringTok{"Errors"}\NormalTok{)}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\StringTok{"df"}\NormalTok{=df, }
+              \StringTok{"accuracy"}\NormalTok{=}\DecValTok{1}\OperatorTok{-}\KeywordTok{sum}\NormalTok{(df}\OperatorTok{$}\NormalTok{Errors)}\OperatorTok{/}\KeywordTok{nrow}\NormalTok{(df)))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Finalment construïm el model de regressió logística amb totes les
+variables explicatives:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{res <-}\StringTok{ }\KeywordTok{train.test.split}\NormalTok{(data)}
+\NormalTok{train <-}\StringTok{ }\NormalTok{res}\OperatorTok{$}\NormalTok{train}
+\NormalTok{test <-}\StringTok{ }\NormalTok{res}\OperatorTok{$}\NormalTok{test}
+\NormalTok{model <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(disease }\OperatorTok{~}\StringTok{ }\NormalTok{., }\DataTypeTok{data=}\NormalTok{train, }\DataTypeTok{family=}\KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = disease ~ ., family = binomial(link = "logit"), 
+##     data = train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.9790  -0.5375  -0.1399   0.4316   2.7367  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -4.100852   3.269342  -1.254 0.209720    
+## age         -0.025433   0.025960  -0.980 0.327240    
+## sex1         1.493321   0.584413   2.555 0.010611 *  
+## cp2          1.041802   0.837246   1.244 0.213382    
+## cp3          0.436958   0.715180   0.611 0.541215    
+## cp4          2.202510   0.704711   3.125 0.001776 ** 
+## trestbps     0.021484   0.012631   1.701 0.088954 .  
+## chol         0.002931   0.004251   0.689 0.490538    
+## fbs1        -0.497026   0.618844  -0.803 0.421886    
+## restecg1     0.885653   2.415596   0.367 0.713888    
+## restecg2     0.638122   0.420301   1.518 0.128952    
+## thalach     -0.022285   0.013703  -1.626 0.103896    
+## exang1       0.800569   0.474149   1.688 0.091328 .  
+## oldpeak      0.362455   0.246965   1.468 0.142203    
+## slope2       1.117982   0.504230   2.217 0.026609 *  
+## slope3       0.514305   0.966492   0.532 0.594632    
+## ca1          1.951149   0.538482   3.623 0.000291 ***
+## ca2          2.843190   0.800578   3.551 0.000383 ***
+## ca3          1.839818   0.939805   1.958 0.050270 .  
+## thal6       -0.289321   0.841602  -0.344 0.731016    
+## thal7        1.335227   0.466457   2.862 0.004203 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 334.42  on 241  degrees of freedom
+## Residual deviance: 166.58  on 221  degrees of freedom
+## AIC: 208.58
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+La sortida de \texttt{summary} mostra que s'han creat variables dummy
+per als factors, i marca les variables estadísticament significatives
+amb asteriscs. El model final es construirà considerant aquestes
+variables explicatives significatives i descartant la resta:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(disease }\OperatorTok{~}\StringTok{ }\NormalTok{oldpeak}\OperatorTok{+}\NormalTok{sex}\OperatorTok{+}\NormalTok{cp}\OperatorTok{+}\NormalTok{slope}\OperatorTok{+}\NormalTok{ca}\OperatorTok{+}\NormalTok{thal,}
+             \DataTypeTok{data=}\NormalTok{train, }\DataTypeTok{family=}\KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = disease ~ oldpeak + sex + cp + slope + ca + thal, 
+##     family = binomial(link = "logit"), data = train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.6282  -0.5784  -0.1713   0.4911   2.6806  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -4.62273    0.86507  -5.344 9.10e-08 ***
+## oldpeak      0.50887    0.22388   2.273 0.023027 *  
+## sex1         1.05794    0.49140   2.153 0.031327 *  
+## cp2          0.65040    0.79407   0.819 0.412748    
+## cp3          0.05233    0.67603   0.077 0.938294    
+## cp4          2.22620    0.63918   3.483 0.000496 ***
+## slope2       1.31049    0.46786   2.801 0.005094 ** 
+## slope3       0.57047    0.84103   0.678 0.497583    
+## ca1          1.97457    0.49313   4.004 6.22e-05 ***
+## ca2          2.22261    0.71478   3.109 0.001874 ** 
+## ca3          1.79655    0.89673   2.003 0.045129 *  
+## thal6       -0.09523    0.75797  -0.126 0.900017    
+## thal7        1.37326    0.43020   3.192 0.001412 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 334.42  on 241  degrees of freedom
+## Residual deviance: 179.58  on 229  degrees of freedom
+## AIC: 205.58
+## 
+## Number of Fisher Scoring iterations: 5
+\end{verbatim}
+
+Finalment comprovarem l'efectivitat del model de regressió logística amb
+el conjunt de dades de test:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{results <-}\StringTok{ }\KeywordTok{test.model}\NormalTok{(model, test)}
+\KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Precisió: "}\NormalTok{, results}\OperatorTok{$}\NormalTok{accuracy, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Precisió: 0.950819672131147"
+\end{verbatim}
+
+S'observa que el model de regressió logística ha assolit una precisió
+del 95\% classificant els casos de malaltia del joc de dades de test.
+
+\hypertarget{representacio-dels-resultats}{%
+\section{Representació dels
+resultats}\label{representacio-dels-resultats}}
+
+El model de regressió logística ha assolit una bona precisió
+identificant els casos de malaltia al joc de dades de test. La següent
+taula mostra els resultats per a les observacions amb error de
+diagnòstic:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}\StringTok{ }\NormalTok{results}\OperatorTok{$}\NormalTok{df}
+\NormalTok{df[df}\OperatorTok{$}\NormalTok{Errors}\OperatorTok{==}\DecValTok{1}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllrr@{}}
+\toprule
+& Realitat & Prediccio & Probabilitat & Errors\tabularnewline
+\midrule
+\endhead
+172 & 0 & 1 & 0.5086649 & 1\tabularnewline
+262 & 1 & 0 & 0.1480825 & 1\tabularnewline
+291 & 1 & 0 & 0.3961323 & 1\tabularnewline
+\bottomrule
+\end{longtable}
+
+Als estudis clínics és molt important conèixer els tipus d'errors
+comesos. Els errors són de dos tipus:
+
+\begin{itemize}
+\tightlist
+\item
+  Errors de tipus I o falsos positius: diagnòstic positiu sense
+  malaltia.
+\item
+  Errors de tipus II o falsos negatius: malaltia sense diagnòstic
+  positiu.
+\end{itemize}
+
+La següent matriu de confusió mostra quants falsos positius i falsos
+negatius s'han comès amb el model de regressió logística generat a
+aquest exercici. Les files de la matriu indiquen els diagnòstics reals i
+les columnes les prediccions generades pel model:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(df}\OperatorTok{$}\NormalTok{Realitat, df}\OperatorTok{$}\NormalTok{Prediccio)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    
+##      0  1
+##   0 34  1
+##   1  2 24
+\end{verbatim}
+
+S'observa que el model de regressió logística ha comés 1 error de tipus
+I i 2 errors de tipus II.
+
+\hypertarget{conclusions}{%
+\section{Conclusions}\label{conclusions}}
+
+S'ha seleccionat un joc de dades reial i s'han preprocessat les dades
+per a permetre respondre a diverses preguntes d'interès analític
+relacionades amb quins són els factors que més influència semblen tenir
+en la presència d'una malaltia cardiovascular.
+
+En concret, s'ha generat un model de regresssió logística que ha permès
+identificar les variables més significatives i, a més, ha assolit una
+alta precisió predint nous diagnòstics.
+
+Els resultats dels diferents anàlisis s'han presentat mitjançant gràfics
+i taules.
+
+\hypertarget{codi}{%
+\section{Codi}\label{codi}}
+
+El codi R markdown, així com els fitxers CSV original i preprocessat i
+aquest fitxer PDF són al repositori
+\url{https://github.com/dgilros/PRA2_Tipologia}
+
+Per a generar el fitxer amb les dades preprocessades s'ha usat el
+següent codi R:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{write.csv}\NormalTok{(data, }\DataTypeTok{file=}\StringTok{"heart.csv"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{","}\NormalTok{, }\DataTypeTok{row.names=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{referencies}{%
+\section*{Referències}\label{referencies}}
+\addcontentsline{toc}{section}{Referències}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  \url{https://archive.ics.uci.edu/ml/datasets/Heart+Disease}
+\item
+  \url{https://www.who.int/health-topics/cardiovascular-diseases/\#tab=tab_1}
+\end{enumerate}
+
+
+\end{document}

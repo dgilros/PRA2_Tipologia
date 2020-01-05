@@ -1,0 +1,466 @@
+---
+title: "Tipologia i Cicle de Vida de les Dades: PRA2"
+author: "Estudiant: David Gil del Rosal"
+fontsize: 12
+output:
+  pdf_document:
+    toc: no
+    number_sections: yes
+    toc_depth: 2
+    keep_tex: true
+    fig_width: 8
+    fig_height: 7
+    df_print: kable
+  word_document: default
+  html_document:
+    highlight: default
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Descripció del dataset
+L'objectiu d'aquesta pràctica és el preprocessament i anàlsi preliminar del joc de dades "Heart Disease Dataset" de l'*UCI
+Machine Learning Repository* [1]. Aquest dataset recopila analítiques sobre pacients tractats a diversos centres mèdics amb l'objectiu de predir 
+si han sigut diagnosticats amb una malaltia cardiovascular.
+
+L'interès d'aquest joc de dades és que el seu anàlisi ajuda
+a conèixer quins factors alerten sobre la presència d'una malaltia
+coronària i aixó pot contribuïr al seu diagnòstic i prevenció.
+Aquests objectius són importants: segons l'Organització Mundial de la Salut les malalties cardiovasculars són la primera causa global
+de mortalitat [2].
+
+Des del punt de vista del seu preprocessament aquest joc de dades és interessant perque presenta atributs
+quantitatius i qualitatius, axí com valors perduts i extrems.
+
+# Integració i selecció de les dades a analitzar
+El joc de dades complet consta de 4 fitxers corresponents a diversos hospitals i centres mèdics. Segons [1] les úniques dades usades a les recerques prèvies publicades han sigut les de la *Cleveland Clinic Foundation*, per la qual cosa són les que usarem a aquest treball.
+
+El joc de dades original consta de 76 variables, però tots els estudis publicats han analitzat els 14 atributs més importants que es presenten a continuació. S'indica si són quantitatius (numèrics) o
+qualitatis (categòrics). Tots els atributs categòrics estàn codificats
+mitjançant números per als quals s'assenyala els nivells
+i el valor de referència que és el que presenta menys
+risc de malaltia cardiovascular i que, excepte se s'indica el contrari,
+ès el primer nivell.
+
+| Atribut   | Descripció                                         | Tipus                         |
+|-----------|----------------------------------------------------|-------------------------------|
+| age       | Edat en anys                                       | Num.                          |
+| sex       | Sexe                                               | Cat.: 0=dona, 1=home          |
+| cp        | Tipus de dolor en el pit                           | Cat.: 1,2,3,4; 4=asimptomàtic |
+| trestbps  | Pressió de la sang en repòs en mm/Hg               | Num.                          |
+| chol      | Sèrum de colesterol en mg/dl                       | Num.                          |
+| fbs       | Nivell de sucre en sang en dejuni > 120 mg/dl      | Cat.: 0=no, 1=sí              |
+| restecg   | Resultats de l'electrocardiograma en repòs         | Cat.: 0,1,2; 0=normal         |
+| thalach   | Velocitat màxima de pulsacions registrada          | Cat.: 0,1,2,3; 0=normal       |
+| exang     | Angina de pit induïda per exercici                 | Cat.: 0=no, 1=sí              |
+| oldpeak   | Depressió en el segment ST de l'electrocardiograma | Num.                          |
+| slope     | Tipus de pendent del segment ST                    | Cat.: 1=avall, 2=pla, 3=amunt |
+| ca        | Venes majors acolorides amb fluoroscopi            | Cat.: 0,1,2,3                 |
+| thal      | Defecte congènit de sang (talassèmia)              | Cat.: 3=no,6=inactiu,7=actiu  |
+| num       | Diagnòstic (valor a predir)                        | Cat.: 0=sa, 1-4=malalt        |
+
+# Neteja de les dades
+
+Les dades són en un fitxer CSV delimitat per comes al lloc web de l'*UCI Machine Learning Repository* [1].
+El següent codi R llegeix el fitxer i assigna el nóm dels atributs. Els valors buits estan codificats
+amb el caràcter "?" al fitxer:
+
+```{r message= FALSE, warning=FALSE}
+data <- read.csv('processed.cleveland.data', header=FALSE, 
+                 sep=",", na.strings="?")
+colnames(data) <- c('age','sex','cp','trestbps','chol','fbs',
+                    'restecg','thalach','exang','oldpeak',
+                    'slope','ca','thal','num')
+```
+
+El joc de dades conté 303 registres amb 14 variables. Totes s'han
+interpretat com numèriques ja que, com s'ha dit, les categòriques estan codificades mitjançant
+números:
+
+```{r message= FALSE, warning=FALSE}
+str(data)
+```
+
+Abans de proseguir l'anàlisi, farem dues tasques de preprocessament. Com que l'anàlisis es centrarà en
+detectar la presència o absència de malaltia i no el seu tipus, substituïrem
+la variable `num` (factor amb nivells 0 a 4) pel factor
+binari `disease` i convertirem la resta de variables
+categòriques en factors:
+
+```{r message= FALSE, warning=FALSE}
+data$disease <- as.factor(ifelse(data$num == 0, 0, 1))
+data$num <- NULL
+cat_vars <- c('sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal')
+for(cat_var in cat_vars) {
+  data[,cat_var] <- as.factor(data[,cat_var])
+}
+str(data)
+```
+
+## Elements buits
+
+El següent codi R usa la funció summary() per a mostrar els
+principals estadístics de les variables del joc de dades.
+També s'aprecia la presència de valors buits NA:
+
+```{r message= FALSE, warning=FALSE}
+summary(data)
+```
+
+Hi ha 6 registres amb valors buits: 4 per a l'atribut `ca` i 2 per a l'atribut `thal`. Per a
+imputar el seu valor podriem usar una mesura de tendència central (la 
+moda atès que tots dos atributs són categòrics) o bé predir-lo emprant un algorisme de mineria
+de dades. Optarem per la darrera opció, imputant-los amb els 3 veïns més propers
+emprant la funció `kNN` de la llibreria `VIM`:
+
+```{r message= FALSE, warning=FALSE}
+library(VIM)
+data <- kNN(data, variable=c("ca","thal"), k=3, imp_var=FALSE)
+colSums(is.na(data))
+```
+
+S'observa que ja no hi ha registres amb valors buits.
+
+## Valors extrems
+
+Per a detectar els valors extrems (*extreme scores*) de les variables numèriques,
+usarem el criteri convencional de considerar com outliers els valors inferiors
+a Q1-1.5IQR o superiors que Q3+1.5IQR on Q1, Q3 són el primer i el tercer
+quartil de la distribució de valors de la variable corresponent, i IQR és
+el rang interquartílic. 
+
+El següent codi R implementa una funció que, donat el dataframe que conté
+el joc de dades i un vector amb el nóm de les variables a testejar, retorna un
+dataframe les files del qual corresponen a les variables amb outliers,
+indicant el número, percentatge de registres afectats i valors extrems.
+
+```{r message= FALSE, warning=FALSE}
+get.outliers <- function(data, variables) {
+  df <- data.frame("Variable", 0, 0, 0, 0, "Valors", stringsAsFactors=FALSE)
+  colnames(df) <- c("Variable", "#Outliers", "%Outliers", 
+                    "Q1-1.5IQR", "Q3+1.5IQR", "Valors outliers")
+  row <- 1
+  for(variable in variables) {
+    values <- data[,variable]
+    q <- quantile(values)
+    iqr <- IQR(values)
+    outliers <- boxplot.stats(values)$out
+    n_outliers <- length(outliers)
+    pct_outliers <- n_outliers*100/nrow(data)
+    if(n_outliers > 0) {
+      df[row,] <- list(variable, n_outliers, pct_outliers, 
+                       q[2]-1.5*iqr, q[4]+1.5*iqr,
+                       paste(outliers, sep='', collapse=','))
+      row <- row + 1
+    }
+  }
+  return(df)
+}
+
+num_vars <- c('age', 'trestbps', 'chol', 'thalach', 'oldpeak')   # variables numèriques
+df_outliers <- get.outliers(data, num_vars)
+df_outliers
+```
+
+S'observa que les següents variables presenten valors extrems:
+
+* trestbps: pressió de la sang en repós
+* chol: nivell de colesterol
+* thalach: velocitat màxima de pulsacions
+* oldpeak: depressió en el segment ST de l'electrocardiograma
+
+Els següents *boxplots* mostren els outliers detectats:
+
+```{r message= FALSE, warning=FALSE}
+par(mfrow=c(2,2))
+for(variable in df_outliers$Variable) {
+  boxplot(data[,variable], main=variable)
+}
+```
+
+Per a corregir-los podriem usar les mateixes tècniques que amb els valors perduts però com semblen valors legítims en el domini, optarem per no corregir-los deixant-los tal com són.
+
+# Anàlisi de les dades
+
+## Selecció
+
+L'objectiu dels anàlisis serà determinar quins factors
+influeixen en la presència de malalties cardiovasculars
+i tractar de predir-les. Segons
+[1] totes les recerques publicades s'han basat en aquest
+criteri.
+
+Ambdues classes estan prou equilibrades al joc de
+dades: hi ha 139 pacients malalts i 164 sans.
+
+```{r message= FALSE, warning=FALSE}
+table(data$disease)
+```
+
+## Normalitat i homocedasticitat
+
+Per a comprovar la normalitat de les variables numèriques
+usarem el test de Shapiro-Wilk. És un contrast estadístic
+on la hipòtesi nul.la és que els valors provenen d'una
+distribució normal. El següent codi R aplica aquest test
+a les variables numèriques:
+
+```{r message= FALSE, warning=FALSE}
+for(variable in num_vars) {
+  results <- shapiro.test(data[,variable])
+  print(paste("Variable", variable, "p-valor", results$p))
+}
+```
+
+Per a totes les variables els p-valors són
+menors que 0.05 per la qual cosa, a un nivell de confiança
+del 95%, rebutjem la hipòtesi nul.la de que els valors
+estan normalment distribuïts. 
+
+Mostrarem els histogrames univariants de cada variable on s'aprecia que totes les variables presenten
+importants desviacions de la normalitat com biaixos esquerra-dreta o indicis de multimodalitat.
+
+```{r message= FALSE, warning=FALSE}
+par(mfrow=c(3,2))
+for(variable in num_vars) {
+  hist(data[,variable], main=variable, xlab=variable)
+}
+```
+
+Respecte a l'homocedasticitat, o igualtat de les variàncies
+entre els diferents grups de dades a comparar, per a comprovar-la
+s'estudiarà com varien els valors de les variables numèriques
+en funció de la resposta `disease`. Aplicarem el test de Fligner-Killeen la hipòtesi nul.la del qual és que les variàncies
+dels grups són iguals:
+
+```{r message= FALSE, warning=FALSE}
+fligner.test(age ~ disease, data=data)
+fligner.test(trestbps ~ disease, data=data)
+fligner.test(chol ~ disease, data=data)
+fligner.test(thalach ~ disease, data=data)
+fligner.test(oldpeak ~ disease, data=data)
+```
+
+En el cas de `age`, `thalach` i `oldpeak` el p-valor menor que 0,05 indica que poden rebutjar la hipòtesi nul.la i concloure que les variàncies són diferents en els grups de pacients sans
+i malalts. En el cas de `trestbps` i `chol` no podem rebutjar
+la hipòtesi nul.la de que els grups són homocedàstics.
+
+## Proves estadístiques
+
+### Contrast d'hipòtesis
+
+A aquest apartat realitzarem un contrast d'hipòtesis
+per a determinar si el nivell de colesterol és similar
+en els pacients diagnosticats positiva i negativament
+o si hi ha diferències significatives entre ambdós
+tipus de pacients.
+
+Estratificarem per la variable `disease` per a crear dues
+submostres, segons diagnosi positiu i negatiu, que són les
+que contrastarem. Usarem el test de Welch (derivat
+del test T de Student) per a
+comparar les mitjanes d'ambdós poblacions. Si denotem per
+$\mu_{1}$ la mitjana del nivell de colesterol de la
+població de pacients malalts i per $\mu_{2}$ la de la resta, les
+hipòtesis del test seran:
+
+* Hipòtesi nul.la. $H_{0}: \mu_{1}-\mu_{2}=0$
+* Hipòtesi alternativa. $H_{a}: \mu_{1}-\mu_{2} \ne 0$
+
+Com que compararem mitjanes i el tamany de la mostra és
+303 (major que el valor convencional de 30), pel Teorema 
+del Límit Central podem assumir que la
+distribució de mitjanes és aproximadament normal, així
+que podem aplicar el test T amb garanties.
+
+El següent codi obté les submostres i aplica el test T:
+
+```{r message=FALSE, warning=FALSE}
+data.disease <- data[data$disease == 1,]
+data.non_disease <- data[data$disease == 0,]
+t.test(data.disease$chol, data.non_disease$chol)
+```
+
+El p-valor major que 0,1 indica que, per
+a qualsevol nivell de confiança major que 90%, no es pot rebutjar la hipòtesis nul.la d'igualtat de mitjanes. És a dir: les dades disponibles
+no recolcen que hi ha diferències estadísticament significatives
+entre el nivell de colesterol dels pacients malalts i els sans,
+i són un indici de aquesta variable no és molt rellevant per a
+predir la presència de malaltia cardiovascular.
+
+### Independència entre la resposta i les variables qualitatives
+
+Per a analitzar la correlació entre les variables qualitatives i la resposta podem usar el test Chi-quadrat. A aquest test la
+hipòtesi nul.la és que les variables són independents.
+
+```{r message=FALSE, warning=FALSE}
+for(variable in cat_vars) {
+  tab <- table(data$disease, data[,variable])
+  results <- chisq.test(tab)
+  print(paste("Variable", variable, "p-valor", results$p.value))
+}
+```
+
+Els p-valors menors que 0.05 indiquen que podem rebutjar la
+hipòtesi d'independència i assumir que 
+hi ha relació entre les var1iables qualitatives i la resposta
+malaltia, excepte en el cas de `fbs` on l'alt p-valor
+indica que es pot acceptar que aquesta variable és independent
+del diagnòstic.
+
+### Regressió
+
+A aquest apartat generarem un model de regressió logística que
+permetrà predir la presència de malaltia coronària en funció de
+diverses variables explicatives quantitatives i qualitatives.
+
+La regressió logística està vinculada al concepte d'odds-ratio (OR)
+que mesura l'increment de probabilitat d'una resposta (en el
+nostre cas malaltia coronària) en funció d'un factor. Per a
+les variables binàries l'odd-ratio es pot calcular amb la
+taula de contingència. Per exemple, el següent codi calcula l'OR
+de malaltia coronària segons el sexe (recordem que la variable
+`sex` val 0 per a les dones i 1 per als homes).
+
+```{r message=FALSE, warning=FALSE}
+odds.ratio.binary <- function(x, y) {
+  tab <- table(x,y)
+  return(tab[1,1]*tab[2,2]/(tab[1,2]*tab[2,1]))
+}
+
+odds.ratio.binary(data$disease, data$sex)
+```
+
+L'OR indica que és 3.57 vegades més probable patir
+una malaltia coronària si se és home.
+
+Per a construïr el model de regressió logística
+aplicarem una tècnica anomenada selecció de variables
+cap enrere (backward selection). Construïrem un model
+amb totes les variables independents i després eliminarem
+les estadísticament no significatives. Com és habitual
+a l'àmbit del *machine learning*, particionarem
+les dades en un conjunt d'entrenament i test per a
+validar l'efectivitat del model construït.
+
+```{r message=FALSE, warning=FALSE}
+train.test.split <- function(data, train_size=0.8) {
+  smp_size <- floor(train_size * nrow(data))
+  train_ind <- sample(seq_len(nrow(data)), size=smp_size, replace=FALSE)
+  train <- data[train_ind,]
+  test <- data[-train_ind,]
+  return(list("train"=train, "test"=test))
+}
+
+test.model <- function(model, test_df) {
+  probs <- predict(model, test_df, type="response")
+  preds <- as.factor(ifelse(probs < 0.5, 0, 1))
+  errors <- ifelse(test_df$disease==preds, 0, 1)
+  df <- data.frame(test_df$disease, preds, probs, errors)
+  colnames(df) <- c("Realitat", "Prediccio", "Probabilitat","Errors")
+  return(list("df"=df, 
+              "accuracy"=1-sum(df$Errors)/nrow(df)))
+}
+```
+
+Finalment construïm el model de regressió logística amb totes
+les variables explicatives:
+
+```{r message=FALSE, warning=FALSE}
+set.seed(123)
+res <- train.test.split(data)
+train <- res$train
+test <- res$test
+model <- glm(disease ~ ., data=train, family=binomial(link="logit"))
+summary(model)
+```
+
+La sortida de `summary` mostra que s'han creat variables dummy per als factors, i marca les variables estadísticament significatives
+amb asteriscs. El model final es construirà considerant aquestes variables explicatives significatives i descartant la resta:
+
+```{r message=FALSE, warning=FALSE}
+model <- glm(disease ~ oldpeak+sex+cp+slope+ca+thal,
+             data=train, family=binomial(link="logit"))
+summary(model)
+```
+
+Finalment comprovarem l'efectivitat del model de regressió
+logística amb el conjunt de dades de test:
+
+```{r message=FALSE, warning=FALSE}
+results <- test.model(model, test)
+print(paste("Precisió: ", results$accuracy, sep=""))
+```
+
+S'observa que el model de regressió logística ha assolit
+una precisió del 95% classificant els casos de malaltia
+del joc de dades de test.
+
+# Representació dels resultats
+
+El model de regressió logística ha assolit una bona
+precisió identificant els casos de malaltia al joc
+de dades de test. La següent taula mostra els
+resultats per a les observacions amb error de diagnòstic:
+
+```{r message=FALSE, warning=FALSE}
+df <- results$df
+df[df$Errors==1,]
+```
+
+Als estudis clínics és molt important conèixer els tipus
+d'errors comesos. Els errors són de dos tipus:
+
+* Errors de tipus I o falsos positius: diagnòstic positiu sense malaltia.
+* Errors de tipus II o falsos negatius: malaltia sense diagnòstic positiu.
+
+La següent  matriu de 
+confusió mostra quants falsos positius  i falsos negatius s'han comès amb el model de regressió logística generat a aquest
+exercici. Les files de la
+matriu indiquen els diagnòstics reals i les columnes les prediccions
+generades pel model:
+
+```{r message=FALSE, warning=FALSE}
+table(df$Realitat, df$Prediccio)
+```
+
+S'observa que el model de regressió logística ha comés 1 error de
+tipus I i 2 errors de tipus II.
+
+# Conclusions
+
+S'ha seleccionat un joc de dades reial i s'han preprocessat les
+dades per a permetre respondre a diverses preguntes d'interès analític 
+relacionades amb quins són els factors que més influència
+semblen tenir en la presència d'una malaltia cardiovascular. 
+
+En concret, s'ha generat un model de regresssió logística que ha
+permès identificar les variables més significatives i, a més, ha
+assolit una alta precisió predint nous diagnòstics.
+
+Els
+resultats dels diferents anàlisis s'han presentat mitjançant gràfics i
+taules.
+
+# Codi
+
+El codi R markdown, així com els fitxers CSV original i
+preprocessat i aquest fitxer PDF són al repositori
+https://github.com/dgilros/PRA2_Tipologia
+
+Per a generar el fitxer amb les dades preprocessades s'ha usat el següent codi R:
+
+```{r message=FALSE, warning=FALSE}
+write.csv(data, file="heart.csv", sep=",", row.names=FALSE)
+```
+
+# Referències {-}
+
+1) https://archive.ics.uci.edu/ml/datasets/Heart+Disease
+2) https://www.who.int/health-topics/cardiovascular-diseases/#tab=tab_1
